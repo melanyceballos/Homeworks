@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
-import { Stack } from './structures/Stack';
-import { BookForm } from './components/BookForm';
-import { BookList } from './components/BookList';
+import { Queue } from './structures/Queue';
+import { PersonForm } from './components/PersonForm';
+import { QueueList } from './components/QueueList';
 
 export default function App() {
-  const [stackInstance] = useState(() => {
-    const s = new Stack();
-    s.push({ id: 1, name: 'Cien años de soledad', isbn: '978-0307474728', author: 'Gabriel García Márquez', editorial: 'Sudamericana' });
-    s.push({ id: 2, name: 'El señor de los anillos', isbn: '978-8445071410', author: 'J.R.R. Tolkien', editorial: 'Minotauro' });
-    return s;
+  const [queueInstance] = useState(() => {
+    const q = new Queue();
+    q.enqueue({ id: 1, name: 'Carlos Pérez', amount: 250000, arrivalDate: new Date(Date.now() - 1800000).toLocaleString() });
+    q.enqueue({ id: 2, name: 'Ana Gómez', amount: 500000, arrivalDate: new Date(Date.now() - 900000).toLocaleString() });
+    return q;
   });
 
-  const [books, setBooks] = useState(() => stackInstance.toArray());
+  const [queueItems, setQueueItems] = useState(() => queueInstance.toArray());
 
-  const handleAddBook = (book) => {
-    stackInstance.push(book);
-    setBooks(stackInstance.toArray());
+  const handleEnqueuePerson = (person) => {
+    queueInstance.enqueue(person);
+    setQueueItems(queueInstance.toArray());
   };
 
-  const handlePopBook = () => {
-    stackInstance.pop();
-    setBooks(stackInstance.toArray());
+  const handleDequeuePerson = () => {
+    queueInstance.dequeue();
+    setQueueItems(queueInstance.toArray());
   };
 
   return (
     <div style={{ maxWidth: '600px', margin: '40px auto', fontFamily: 'Arial' }}>
-      <h2>Gestión de Pila de Libros (Challenge 4)</h2>
-      <BookForm onAddBook={handleAddBook} />
-      <BookList books={books} onPopBook={handlePopBook} />
+      <h2>Simulación Cajero Automático (Challenge 5)</h2>
+      <PersonForm onEnqueuePerson={handleEnqueuePerson} />
+      <QueueList queueItems={queueItems} onDequeuePerson={handleDequeuePerson} />
     </div>
   );
 }
