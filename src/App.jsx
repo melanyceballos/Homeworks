@@ -1,41 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { FormularioContacto } from './components/FormularioContacto';
-import { ListaContactos } from './components/ListaContactos';
+import React, { useState } from 'react';
+import { LinkedList, DoublyLinkedList } from './structures/LinkedLists';
 
 export default function App() {
-  const [contactos, setContactos] = useState([]);
-  const [cargando, setCargando] = useState(true);
+  const [vista, setVista] = useState('reproductor');
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setContactos([
-        { id: 1, nombre: 'Melany Ceballos', telefono: '1111111' },
-        { id: 2, nombre: 'Martha Ortiz', telefono: '2222222' }
-      ]);
-      setCargando(false);
-    }, 2000);
+  const [reproductor] = useState(() => {
+    const lista = new LinkedList();
+    lista.append({ id: 1, titulo: 'in & out', artista: 'red velvet' });
+    lista.append({ id: 2, titulo: 'Good Day', artista: 'IU' });
+    lista.append({ id: 3, titulo: 'Hit em', artista: 'MEOVV' });
+    return lista;
+  });
+  const [nodoActualCancion, setNodoActualCancion] = useState(reproductor.head);
 
-    return () => clearTimeout(timer);
-  }, []);
+  const [historial] = useState(() => {
+    const dlist = new DoublyLinkedList();
+    dlist.visit('https://google.com');
+    dlist.visit('https://github.com');
+    dlist.visit('https://react.dev');
+    return dlist;
+  });
+  const [paginaActual, setPaginaActual] = useState(historial.current ? historial.current.value : '');
 
-  const agregarContacto = (nuevoContacto) => {
-    setContactos((prev) => [...prev, nuevoContacto]); 
+  const siguienteCancion = () => {
+    if (nodoActualCancion && nodoActualCancion.next) {
+      setNodoActualCancion(nodoActualCancion.next);
+    }
   };
 
-  const eliminarContacto = (id) => {
-    setContactos((prev) => prev.filter((c) => c.id !== id));
+  const irAtras = () => {
+    const url = historial.goBack();
+    if (url) setPaginaActual(url);
+  };
+
+  const irAdelante = () => {
+    const url = historial.goForward();
+    if (url) setPaginaActual(url);
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: '40px auto', fontFamily: 'Arial' }}>
-      <h2> Agenda de contactos</h2>
-      {cargando ? (
-        <h3> Cargando contactos, por favor espere...</h3> 
+    <div style={{ maxWidth: '600px', margin: '30px auto', fontFamily: 'Arial' }}>
+      <nav style={{ marginBottom: '20px' }}>
+        <button onClick={() => setVista('reproductor')} style={{ marginRight: '10px' }}>Vista 1: Reproductor</button>
+        <button onClick={() => setVista('historial')}>Vista 2: Navegador Web</button>
+      </nav>
+
+      {vista === 'reproductor' ? (
+        <div style={{ padding: '15px', border: '1px solid #aaa', borderRadius: '8px' }}>
+          <h3> Reproductor de Música (Lista Simplemente Enlazada)</h3>
+          {nodoActualCancion ? (
+            <div>
+              <p><strong>Reproduciendo:</strong> {nodoActualCancion.value.titulo} - {nodoActualCancion.value.artista}</p>
+              <button onClick={siguienteCancion} disabled={!nodoActualCancion.next}>
+                Siguiente Canción 
+              </button>
+            </div>
+          ) : <p>Fin de la lista</p>}
+        </div>
       ) : (
-        <>
-          <FormularioContacto onAgregar={agregarContacto} />
-          <ListaContactos contactos={contactos} onEliminar={eliminarContacto} />
-        </>
+        <div style={{ padding: '15px', border: '1px solid #aaa', borderRadius: '8px' }}>
+          <h3> Historial Web (Lista Doblemente Enlazada)</h3>
+          <p><strong>URL Actual:</strong> {paginaActual}</p>
+          <button onClick={irAtras} disabled={!historial.current || !historial.current.prev} style={{ marginRight: '10px' }}>
+            ⬅ Atrás
+          </button>
+          <button onClick={irAdelante} disabled={!historial.current || !historial.current.next}>
+            Adelante 
+          </button>
+        </div>
       )}
     </div>
   );
