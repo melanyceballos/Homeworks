@@ -1,40 +1,67 @@
-import React, { useState } from 'react';
-import { NaryTree, NaryTreeNode } from './structures/NaryTree';
-import { Sidebar } from './components/Sidebar';
+import React, { useState, useContext } from 'react';
+import { AuthProvider, AuthContext } from './context/AuthContext';
+import { FileSystemProvider } from './context/FileSystemContext';
+import { Navbar } from './components/Navbar';
+import { FileExplorer } from './components/FileExplorer';
+import { LoginForm } from './components/LoginForm';
+import { CreateNodeModal } from './components/CreateNodeModal';
+import './index.css';
 
-const InicioComponent = () => <div><h4>Página de Inicio</h4><p>Bienvenido al sistema.</p></div>;
-const PerfilComponent = () => <div><h4>Perfil de Usuario</h4><p>Detalles del perfil.</p></div>;
-const AjustesComponent = () => <div><h4>Ajustes</h4><p>Configuración general.</p></div>;
-const ReportesComponent = () => <div><h4>Reportes</h4><p>Métricas y estadísticas.</p></div>;
-
-export default function App() {
-  const [menuTree] = useState(() => {
-    const tree = new NaryTree('Menú Principal');
-
-    const inicio = tree.root.addChild(new NaryTreeNode('Inicio', '/inicio', InicioComponent));
-    const usuario = tree.root.addChild(new NaryTreeNode('Usuario', '/usuario'));
-    usuario.addChild(new NaryTreeNode('Mi Perfil', '/usuario/perfil', PerfilComponent));
-    usuario.addChild(new NaryTreeNode('Ajustes', '/usuario/ajustes', AjustesComponent));
-
-    const admin = tree.root.addChild(new NaryTreeNode('Administración', '/admin'));
-    admin.addChild(new NaryTreeNode('Reportes', '/admin/reportes', ReportesComponent));
-
-    return tree;
-  });
-
-  const [selectedNode, setSelectedNode] = useState(() => menuTree.root.children[0]);
-
-  const SelectedComponent = selectedNode?.component || (() => <p>Seleccione una opción válida.</p>);
+function MainContent() {
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [selectedParentNode, setSelectedParentNode] = useState(null);
 
   return (
-    <div style={{ display: 'flex', fontFamily: 'Arial' }}>
-      <Sidebar tree={menuTree} onSelect={(node) => setSelectedNode(node)} />
-      <main style={{ padding: '20px', flex: 1 }}>
-        <h2>Menú basado en Árbol N-ario (Challenge 9)</h2>
-        <div style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '6px' }}>
-          <SelectedComponent />
-        </div>
+    <div className="app-container">
+      <Navbar onOpenAuthModal={() => setShowAuthModal(true)} />
+
+      <main>
+        {isAuthenticated ? (
+          <FileExplorer onOpenCreateModal={(node) => setSelectedParentNode(node)} />
+        ) : (
+          <div style={{
+            textAlign: 'center',
+            padding: '50px 20px',
+            backgroundColor: 'var(--bg-card)',
+            borderRadius: '10px',
+            border: '1px solid var(--border-color)'
+          }}>
+            <h2>🔒 Acceso Restringido</h2>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
+              Debes iniciar sesión para poder ver y gestionar las carpetas y archivos.
+            </p>
+            <button 
+              onClick={() => setShowAuthModal(true)} 
+              className="btn-primary"
+              style={{ fontSize: '1rem', padding: '10px 20px' }}
+            >
+              Iniciar Sesión
+            </button>
+          </div>
+        )}
       </main>
+
+      {showAuthModal && !isAuthenticated && (
+        <LoginForm onClose={() => setShowAuthModal(false)} />
+      )}
+
+      {selectedParentNode && isAuthenticated && (
+        <CreateNodeModal
+          parentNode={selectedParentNode}
+          onClose={() => setSelectedParentNode(null)}
+        />
+      )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <FileSystemProvider>
+        <MainContent />
+      </FileSystemProvider>
+    </AuthProvider>
   );
 }
