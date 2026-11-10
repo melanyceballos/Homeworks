@@ -1,5 +1,5 @@
 export class Node { constructor(value) { this.value = value; this.next = null; } }
-export class LinkedList { constructor() { this.head = null; this.tail = null; this.length = 0; } append(value) { const node = new Node(value); if (!this.head) this.head = this.tail = node; else { this.tail.next = node; this.tail = node; } this.length++; return node; } }
+export class LinkedList { constructor() { this.head = null; this.tail = null; this.length = 0; } append(value) { const node = new Node(value); if (!this.head) this.head = this.tail = node; else { this.tail.next = node; this.tail = node; } this.length++; return node; } toArray() { const values = []; for (let node = this.head; node; node = node.next) values.push(node.value); return values; } }
 export class DoublyNode { constructor(value) { this.value = value; this.next = null; this.prev = null; } }
 export class DoublyLinkedList {
   constructor() { this.head = null; this.tail = null; this.current = null; this.length = 0; }

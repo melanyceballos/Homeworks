@@ -1,74 +1,12 @@
-import React, { useState } from 'react';
-import { LinkedList, DoublyLinkedList } from './structures/LinkedLists';
-
+import { useState } from 'react'; import { LinkedList, DoublyLinkedList } from './structures/LinkedLists';
 export default function App() {
-  const [vista, setVista] = useState('reproductor');
-
-  const [reproductor] = useState(() => {
-    const lista = new LinkedList();
-    lista.append({ id: 1, titulo: 'in & out', artista: 'red velvet' });
-    lista.append({ id: 2, titulo: 'Good Day', artista: 'IU' });
-    lista.append({ id: 3, titulo: 'Hit em', artista: 'MEOVV' });
-    return lista;
-  });
-  const [nodoActualCancion, setNodoActualCancion] = useState(reproductor.head);
-
-  const [historial] = useState(() => {
-    const dlist = new DoublyLinkedList();
-    dlist.visit('https://google.com');
-    dlist.visit('https://github.com');
-    dlist.visit('https://react.dev');
-    return dlist;
-  });
-  const [paginaActual, setPaginaActual] = useState(historial.current ? historial.current.value : '');
-
-  const siguienteCancion = () => {
-    if (nodoActualCancion && nodoActualCancion.next) {
-      setNodoActualCancion(nodoActualCancion.next);
-    }
-  };
-
-  const irAtras = () => {
-    const url = historial.goBack();
-    if (url) setPaginaActual(url);
-  };
-
-  const irAdelante = () => {
-    const url = historial.goForward();
-    if (url) setPaginaActual(url);
-  };
-
-  return (
-    <div style={{ maxWidth: '600px', margin: '30px auto', fontFamily: 'Arial' }}>
-      <nav style={{ marginBottom: '20px' }}>
-        <button onClick={() => setVista('reproductor')} style={{ marginRight: '10px' }}>Vista 1: Reproductor</button>
-        <button onClick={() => setVista('historial')}>Vista 2: Navegador Web</button>
-      </nav>
-
-      {vista === 'reproductor' ? (
-        <div style={{ padding: '15px', border: '1px solid #aaa', borderRadius: '8px' }}>
-          <h3> Reproductor de Música (Lista Simplemente Enlazada)</h3>
-          {nodoActualCancion ? (
-            <div>
-              <p><strong>Reproduciendo:</strong> {nodoActualCancion.value.titulo} - {nodoActualCancion.value.artista}</p>
-              <button onClick={siguienteCancion} disabled={!nodoActualCancion.next}>
-                Siguiente Canción 
-              </button>
-            </div>
-          ) : <p>Fin de la lista</p>}
-        </div>
-      ) : (
-        <div style={{ padding: '15px', border: '1px solid #aaa', borderRadius: '8px' }}>
-          <h3> Historial Web (Lista Doblemente Enlazada)</h3>
-          <p><strong>URL Actual:</strong> {paginaActual}</p>
-          <button onClick={irAtras} disabled={!historial.current || !historial.current.prev} style={{ marginRight: '10px' }}>
-            ⬅ Atrás
-          </button>
-          <button onClick={irAdelante} disabled={!historial.current || !historial.current.next}>
-            Adelante 
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  const [view, setView] = useState('player'), [songTitle, setSongTitle] = useState(''), [artist, setArtist] = useState(''), [urlInput, setUrlInput] = useState('');
+  const [songs] = useState(() => { const list = new LinkedList(); list.append({ id: 1, titulo: 'In & Out', artista: 'Red Velvet' }); list.append({ id: 2, titulo: 'Good Day', artista: 'IU' }); list.append({ id: 3, titulo: 'Hit em', artista: 'MEOVV' }); return list; });
+  const [songNode, setSongNode] = useState(songs.head), [, refreshSongs] = useState(0);
+  const [history] = useState(() => { const list = new DoublyLinkedList(); list.visit('https://google.com'); list.visit('https://github.com'); list.visit('https://react.dev'); return list; });
+  const [page, setPage] = useState(history.current?.value ?? '');
+  const addSong = e => { e.preventDefault(); if (!songTitle.trim() || !artist.trim()) return; const node = songs.append({ id: crypto.randomUUID(), titulo: songTitle.trim(), artista: artist.trim() }); setSongNode(node); setSongTitle(''); setArtist(''); refreshSongs(n => n + 1); };
+  const previousSong = () => { let current = songs.head, previous = null; while (current && current !== songNode) { previous = current; current = current.next; } if (previous) setSongNode(previous); };
+  const visit = e => { e.preventDefault(); try { const url = new URL(urlInput); if (!['http:', 'https:'].includes(url.protocol)) throw new Error(); history.visit(url.href); setPage(url.href); setUrlInput(''); } catch { window.alert('Ingrese una URL http(s) válida.'); } };
+  return <main style={{ maxWidth: 700, margin: '2rem auto', fontFamily: 'Arial' }}><nav><button onClick={() => setView('player')}>Reproductor</button> <button onClick={() => setView('history')}>Historial</button></nav>{view === 'player' ? <section><h1>Lista simplemente enlazada · canciones</h1><form onSubmit={addSong}><input placeholder="Canción" value={songTitle} onChange={e => setSongTitle(e.target.value)} required/><input placeholder="Artista" value={artist} onChange={e => setArtist(e.target.value)} required/><button>Agregar canción</button></form>{songNode ? <><p>Reproduciendo: <strong>{songNode.value.titulo}</strong> — {songNode.value.artista}</p><button onClick={previousSong} disabled={songNode === songs.head}>Anterior</button> <button onClick={() => setSongNode(songNode.next)} disabled={!songNode.next}>Siguiente</button></> : <p>La lista está vacía.</p>}<h2>Canciones ({songs.length})</h2>{songs.length ? <ol>{songs.toArray().map(song => <li key={song.id}>{song.titulo} — {song.artista}</li>)}</ol> : <p>No hay canciones.</p>}</section> : <section><h1>Historial doblemente enlazado</h1><form onSubmit={visit}><label>Visitar URL<input type="url" placeholder="https://example.com" value={urlInput} onChange={e => setUrlInput(e.target.value)} required/></label><button>Visitar</button></form><p>Actual: {page || 'sin páginas'}</p><button onClick={() => setPage(history.goBack() ?? '')} disabled={!history.current?.prev}>Atrás</button> <button onClick={() => setPage(history.goForward() ?? '')} disabled={!history.current?.next}>Adelante</button></section>}</main>;
 }
