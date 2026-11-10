@@ -1,0 +1,2 @@
+export function esParOImparRegular(numero) { if (typeof numero !== 'number' || !Number.isFinite(numero)) throw new TypeError('Ingrese un número válido.'); const resultado = numero % 2 === 0 ? 'PAR' : 'IMPAR'; console.log(`[Regular Function] ${numero} es ${resultado}.`); return resultado; }
+export const esParOImparArrow = numero => { if (typeof numero !== 'number' || !Number.isFinite(numero)) throw new TypeError('Ingrese un número válido.'); const resultado = numero % 2 === 0 ? 'PAR' : 'IMPAR'; console.log(`[Arrow Function] ${numero} es ${resultado}.`); return resultado; };
