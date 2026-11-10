@@ -1,70 +1,10 @@
-export class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-export class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.length = 0;
-  }
-
-  append(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-    this.length++;
-  }
-}
-
-export class DoublyNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-    this.prev = null;
-  }
-}
-
-export class DoublyLinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.current = null;
-  }
-
-  visit(url) {
-    const newNode = new DoublyNode(url);
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-      this.current = newNode;
-    } else {
-      newNode.prev = this.current;
-      this.current.next = newNode;
-      this.current = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  goBack() {
-    if (this.current && this.current.prev) {
-      this.current = this.current.prev;
-    }
-    return this.current ? this.current.value : null;
-  }
-
-  goForward() {
-    if (this.current && this.current.next) {
-      this.current = this.current.next;
-    }
-    return this.current ? this.current.value : null;
-  }
+export class TreeNode { constructor(value) { this.value = value; this.left = null; this.right = null; } }
+export class BinarySearchTree {
+  constructor() { this.root = null; this.size = 0; }
+  insert(value) { if (!Number.isFinite(value)) throw new TypeError('El valor debe ser numérico.'); const node = new TreeNode(value); if (!this.root) { this.root = node; this.size++; return true; } let current = this.root; while (true) { if (value === current.value) return false; const side = value < current.value ? 'left' : 'right'; if (!current[side]) { current[side] = node; this.size++; return true; } current = current[side]; } }
+  search(value) { let current = this.root; while (current) { if (value === current.value) return current; current = value < current.value ? current.left : current.right; } return null; }
+  inOrder() { const out = []; const walk = node => { if (!node) return; walk(node.left); out.push(node.value); walk(node.right); }; walk(this.root); return out; }
+  preOrder() { const out = []; const walk = node => { if (!node) return; out.push(node.value); walk(node.left); walk(node.right); }; walk(this.root); return out; }
+  postOrder() { const out = []; const walk = node => { if (!node) return; walk(node.left); walk(node.right); out.push(node.value); }; walk(this.root); return out; }
+  toD3() { const convert = node => node ? { name: String(node.value), children: [node.left, node.right].filter(Boolean).map(convert) } : null; return convert(this.root); }
 }
