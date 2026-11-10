@@ -1,14 +1,3 @@
-import React from 'react';
-
-export const ItemContacto = ({ contacto, onEliminar }) => {
-  return (
-    <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', padding: '8px', border: '1px solid #ccc' }}>
-      <div>
-        <strong>{contacto.nombre}</strong> - <span>{contacto.telefono}</span>
-      </div>
-      <button onClick={() => onEliminar(contacto.id)} style={{ backgroundColor: '#ff4d4d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-        Eliminar
-      </button>
-    </li>
-  );
-};
+export function BookList({ books, onPopBook }) {
+  return <section><h3>Libros · tope primero · {books.length}</h3><button onClick={onPopBook} disabled={!books.length}>Retirar libro (pop)</button>{books.length ? <ol>{books.map((book, index) => <li key={book.id}><strong>{book.name}</strong> — {book.author} · ISBN {book.isbn} · {book.editorial}{index === 0 ? ' (tope)' : ''}</li>)}</ol> : <p>La pila está vacía.</p>}</section>;
+}
