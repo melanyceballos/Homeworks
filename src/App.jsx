@@ -33,7 +33,7 @@ export default function App() {
         <h3> Cargando contactos, por favor espere...</h3> 
       ) : (
         <>
-          <FormularioContacto onAgregar={agregarContacto} />
+          <FormularioContacto onAgregar={agregarContacto} existingIds={contactos.map(contacto => contacto.id)} />
           <ListaContactos contactos={contactos} onEliminar={eliminarContacto} />
         </>
       )}

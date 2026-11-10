@@ -1,0 +1,2 @@
+export function validateContact(name, phone) { if (typeof name !== 'string' || name.trim().length < 2) return 'El nombre debe tener al menos 2 caracteres.'; if (typeof phone !== 'string' || !/^\+?[\d\s()-]{7,20}$/.test(phone.trim())) return 'Ingrese un teléfono válido (7 a 20 caracteres).'; return ''; }
+export function createContactId(existingIds = []) { const ids = new Set(existingIds.map(String)); let id; do { id = globalThis.crypto.randomUUID(); } while (ids.has(id)); return id; }

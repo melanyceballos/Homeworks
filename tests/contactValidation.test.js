@@ -1,0 +1,3 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import { createContactId, validateContact } from '../src/utils/contactValidation.js';
+test('contact validation rejects empty names and malformed phone numbers', () => { assert.ok(validateContact('', '1234567')); assert.ok(validateContact('Ana', 'abc')); assert.ok(validateContact('Ana', '123')); assert.equal(validateContact('Ana Pérez', '+57 (300) 123-4567'), ''); });
+test('contact ids are unique against existing ids', () => { const first = createContactId(); const second = createContactId([first]); assert.notEqual(first, second); });
