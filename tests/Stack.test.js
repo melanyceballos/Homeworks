@@ -1,0 +1,2 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import { Stack } from '../src/structures/Stack.js';
+test('empty stack and LIFO operations', () => { const stack = new Stack(); assert.equal(stack.isEmpty(), true); assert.equal(stack.pop(), null); assert.equal(stack.peek(), null); stack.push('book1'); stack.push('book2'); assert.equal(stack.size(), 2); assert.equal(stack.peek(), 'book2'); assert.equal(stack.pop(), 'book2'); assert.equal(stack.pop(), 'book1'); assert.equal(stack.isEmpty(), true); });

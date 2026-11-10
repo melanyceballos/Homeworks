@@ -7,4 +7,5 @@ export class Stack {
   isEmpty() { return this.length === 0; }
   size() { return this.length; }
   toArray() { const values = []; for (let node = this.top; node; node = node.next) values.push(node.value); return values; }
+  print() { return this.toArray(); }
 }
