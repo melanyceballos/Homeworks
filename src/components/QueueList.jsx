@@ -1,14 +1,3 @@
-import React from 'react';
-
-export const ItemContacto = ({ contacto, onEliminar }) => {
-  return (
-    <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', padding: '8px', border: '1px solid #ccc' }}>
-      <div>
-        <strong>{contacto.nombre}</strong> - <span>{contacto.telefono}</span>
-      </div>
-      <button onClick={() => onEliminar(contacto.id)} style={{ backgroundColor: '#ff4d4d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-        Eliminar
-      </button>
-    </li>
-  );
-};
+export function QueueList({ queueItems, onDequeuePerson }) {
+  return <section><h3>Turnos FIFO · {queueItems.length}</h3><button onClick={onDequeuePerson} disabled={!queueItems.length}>Atender siguiente</button>{queueItems.length ? <ol>{queueItems.map((person, index) => <li key={person.id}><strong>{person.name}</strong> — ${person.amount} · Llegada: {person.arrivalDate}{index === 0 ? ' (siguiente)' : ''}</li>)}</ol> : <p>La fila está vacía.</p>}</section>;
+}
