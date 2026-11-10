@@ -6,8 +6,10 @@ import { QueueList } from './components/QueueList';
 export default function App() {
   const [queueInstance] = useState(() => {
     const q = new Queue();
-    q.enqueue({ id: 1, name: 'Carlos Pérez', amount: 250000, arrivalDate: new Date(Date.now() - 1800000).toLocaleString() });
-    q.enqueue({ id: 2, name: 'Ana Gómez', amount: 500000, arrivalDate: new Date(Date.now() - 900000).toLocaleString() });
+    const carlosArrival = new Date(Date.now() - 1800000).toISOString();
+    const anaArrival = new Date(Date.now() - 900000).toISOString();
+    q.enqueue({ id: 1, name: 'Carlos Pérez', amount: 250000, arrivalAt: carlosArrival, arrivalDate: new Date(carlosArrival).toLocaleString() });
+    q.enqueue({ id: 2, name: 'Ana Gómez', amount: 500000, arrivalAt: anaArrival, arrivalDate: new Date(anaArrival).toLocaleString() });
     return q;
   });
 
