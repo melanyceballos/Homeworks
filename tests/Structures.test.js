@@ -1,0 +1,3 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import { Stack } from '../src/structures/Stack.js'; import { Queue } from '../src/structures/Queue.js';
+test('private book page stack remains LIFO', () => { const stack = new Stack(); stack.push('A'); stack.push('B'); assert.equal(stack.peek(), 'B'); assert.equal(stack.pop(), 'B'); assert.equal(stack.pop(), 'A'); assert.equal(stack.pop(), null); });
+test('private ATM queue remains FIFO', () => { const queue = new Queue(); queue.enqueue('A'); queue.enqueue('B'); assert.equal(queue.peek(), 'A'); assert.equal(queue.dequeue(), 'A'); assert.equal(queue.dequeue(), 'B'); assert.equal(queue.dequeue(), null); });
