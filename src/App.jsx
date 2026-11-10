@@ -1,25 +1,16 @@
-function esParOImparRegular(numero) {
-    if (typeof numero !== 'number') {
-        console.log("Por favor, ingrese un número válido.");
-        return;
-    }
+import { useState } from 'react';
 
-    if (numero % 2 === 0) {
-        console.log(`[Regular Function] El número ${numero} es PAR.`);
-    } else {
-        console.log(`[Regular Function] El número ${numero} es IMPAR.`);
-    }
+export function esParOImparRegular(numero) {
+  if (typeof numero !== 'number' || !Number.isFinite(numero)) throw new TypeError('Ingrese un número válido.');
+  return numero % 2 === 0 ? 'PAR' : 'IMPAR';
 }
-
-const esParOImparArrow = (numero) => {
-    if (typeof numero !== 'number') return console.log("Por favor, ingrese un número válido.");
-
-    const resultado = numero % 2 === 0 ? "PAR" : "IMPAR";
-    console.log(`[Arrow Function] El número ${numero} es ${resultado}.`);
+export const esParOImparArrow = (numero) => {
+  if (typeof numero !== 'number' || !Number.isFinite(numero)) throw new TypeError('Ingrese un número válido.');
+  return numero % 2 === 0 ? 'PAR' : 'IMPAR';
 };
-
-esParOImparRegular(10); 
-esParOImparRegular(7);  
-
-esParOImparArrow(42);  
-esParOImparArrow(15);  
+export default function App() {
+  const [entrada, setEntrada] = useState('');
+  const [resultado, setResultado] = useState('');
+  const revisar = (e) => { e.preventDefault(); const n = Number(entrada); if (entrada.trim() === '' || !Number.isFinite(n)) { setResultado('Ingrese un número válido.'); return; } setResultado(`Regular: ${esParOImparRegular(n)} · Arrow: ${esParOImparArrow(n)}`); };
+  return <main><h1>¿Par o impar?</h1><form onSubmit={revisar}><label>Número <input type="number" step="any" value={entrada} onChange={e => setEntrada(e.target.value)} /></label><button>Comprobar</button></form><p role="status">{resultado}</p></main>;
+}
