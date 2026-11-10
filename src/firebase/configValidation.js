@@ -1,0 +1,1 @@
+export function isFirebaseConfigReady(config) { const required = ['apiKey', 'authDomain', 'projectId', 'appId']; return required.every(key => typeof config[key] === 'string' && config[key].length > 0 && !config[key].startsWith('your-') && !config[key].includes('your-project')); }

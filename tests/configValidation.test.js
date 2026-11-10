@@ -1,0 +1,2 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import { isFirebaseConfigReady } from '../src/firebase/configValidation.js';
+test('Firebase placeholder values are not treated as credentials', () => { assert.equal(isFirebaseConfigReady({ apiKey:'your-api-key', authDomain:'your-project.firebaseapp.com', projectId:'your-project-id', appId:'your-app-id' }), false); assert.equal(isFirebaseConfigReady({ apiKey:'real-key', authDomain:'app.firebaseapp.com', projectId:'homeworks-123', appId:'app-123' }), true); });
