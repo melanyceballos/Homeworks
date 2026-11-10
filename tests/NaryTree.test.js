@@ -1,0 +1,2 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import { NaryTree, NaryTreeNode } from '../src/structures/NaryTree.js';
+test('tree stores values, parents, children and traverses in preorder', () => { const tree = new NaryTree('root'); const a = tree.addNode(tree.root, new NaryTreeNode('A', '/a')); a.addChild(new NaryTreeNode('B', '/b')); assert.equal(a.parent, tree.root); assert.equal(tree.find('B').link, '/b'); assert.deepEqual(tree.traverse(node => node.title), ['root','A','B']); });

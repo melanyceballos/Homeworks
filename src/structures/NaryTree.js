@@ -1,5 +1,5 @@
 export class NaryTreeNode {
-  constructor(title, link = null, component = null) { if (!title) throw new TypeError('El título es obligatorio.'); this.title = title; this.link = link; this.component = component; this.children = []; this.parent = null; }
+  constructor(title, link = null, component = null) { if (!title) throw new TypeError('El título es obligatorio.'); this.title = title; this.value = title; this.link = link; this.component = component; this.children = []; this.parent = null; }
   addChild(child) { if (!(child instanceof NaryTreeNode)) throw new TypeError('El hijo debe ser un NaryTreeNode.'); child.parent = this; this.children.push(child); return child; }
 }
-export class NaryTree { constructor(title = 'Menú') { this.root = new NaryTreeNode(title); } find(title) { const walk = node => node.title === title ? node : node.children.map(walk).find(Boolean) || null; return walk(this.root); } }
+export class NaryTree { constructor(title = 'Menú') { this.root = new NaryTreeNode(title); } addNode(parent, child) { const parentNode = typeof parent === 'string' ? this.find(parent) : parent; if (!parentNode) throw new Error('No se encontró el nodo padre.'); return parentNode.addChild(child); } find(title) { const walk = node => node.title === title ? node : node.children.map(walk).find(Boolean) || null; return walk(this.root); } traverse(callback = node => node) { const result = []; const walk = node => { result.push(callback(node)); node.children.forEach(walk); }; walk(this.root); return result; } }
