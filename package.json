@@ -1,0 +1,1 @@
+{"name":"challenge10-supabase-tasks","private":true,"version":"1.0.0","type":"module","scripts":{"dev":"vite","build":"vite build","test":"node --test","lint":"oxlint ."},"dependencies":{"@supabase/supabase-js":"^2.57.4","react":"^19.2.8","react-dom":"^19.2.8","react-router-dom":"^7.9.0"},"devDependencies":{"@vitejs/plugin-react":"^6.1.1","oxlint":"^1.79.0","vite":"^8.3.0"}}
