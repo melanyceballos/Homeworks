@@ -27,7 +27,7 @@ export default function App() {
   const [activeNav, setActiveNav] = useState('Inicio');
   const [activeGenre, setActiveGenre] = useState('Todo');
   const [playingId, setPlayingId] = useState(null);
-  const [selectedSongId, setSelectedSongId] = useState('luna');
+  const [selectedSongId, setSelectedSongId] = useState(songs[0]?.id ?? '');
   const [favorites, setFavorites] = useState(getSavedFavorites);
   const [showAll, setShowAll] = useState(false);
 
@@ -44,12 +44,13 @@ export default function App() {
   }, []);
 
   const selectedSong = songs.find((song) => song.id === selectedSongId) ?? songs[0];
+  const currentSongId = selectedSong?.id ?? '';
   const recommendationGraph = useMemo(() => {
     const adjacency = Object.fromEntries(songs.map((song) => [song.id, []]));
     connections.forEach(([from, to]) => { adjacency[from].push(to); adjacency[to].push(from); });
     return adjacency;
   }, []);
-  const recommendations = (recommendationGraph[selectedSongId] ?? []).map((id) => songs.find((song) => song.id === id)).filter(Boolean);
+  const recommendations = (recommendationGraph[currentSongId] ?? []).map((id) => songs.find((song) => song.id === id)).filter(Boolean);
 
   let visibleSongs = songs;
   let sectionTitle = activeNav === 'Favoritos' ? 'Tus canciones favoritas' : activeNav === 'Novedades' ? 'Lo más escuchado' : activeNav === 'Explorar' ? 'Explora el catálogo' : playlists.includes(activeNav) ? activeNav : 'Canciones para ti';
@@ -115,7 +116,7 @@ export default function App() {
 
             <section className="recommendation-section">
               <div className="section-heading"><div><span className="section-kicker"><Sparkles size={14} /> CONEXIONES MUSICALES</span><h2>Si te gusta <em>{selectedSong.title}</em></h2></div><span className="graph-badge">GRAFO NO DIRIGIDO</span></div>
-              <div className="recommendation-card"><div className="recommendation-info"><p>Las canciones se conectan por afinidad de estilo. Elige un nodo para explorar su vecindad.</p><div className="related-list">{recommendations.slice(0, 3).map((song) => <button key={song.id} onClick={() => { setSelectedSongId(song.id); setPlayingId(song.id); }}><span className="related-dot" /><span>{song.title}</span><small>{song.artist}</small></button>)}</div></div><SongGraph songs={songs} connections={connections} selectedId={selectedSongId} onSelect={(song) => setSelectedSongId(song.id)} /></div>
+              <div className="recommendation-card"><div className="recommendation-info"><p>Las canciones se conectan por afinidad de estilo. Elige un nodo para explorar su vecindad.</p><div className="related-list">{recommendations.slice(0, 3).map((song) => <button key={song.id} onClick={() => { setSelectedSongId(song.id); setPlayingId(song.id); }}><span className="related-dot" /><span>{song.title}</span><small>{song.artist}</small></button>)}</div></div><SongGraph songs={songs} connections={connections} selectedId={currentSongId} onSelect={(song) => setSelectedSongId(song.id)} /></div>
             </section>
           </div>
 
